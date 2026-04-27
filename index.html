@@ -2,115 +2,322 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JMB SCREEN STREAM</title>
-    <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AR0 - Private Chat Online</title>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; text-align: center; padding: 20px; }
-        .box { border: 1px solid #0f0; padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        video { width: 100%; max-width: 500px; border: 2px solid #0f0; background: #111; margin-top: 10px; }
-        input { padding: 10px; width: 80%; margin: 10px 0; background: #222; border: 1px solid #0f0; color: #0f0; text-align: center; }
-        button { padding: 12px 24px; background: #0f0; color: #000; border: none; font-weight: bold; cursor: pointer; width: 100%; max-width: 200px; margin: 5px; }
-        button:active { background: #0a0; }
-        .status { font-size: 0.8em; color: #888; }
+        :root { --bg: #0a0b10; --panel: #161b22; --accent: #8a2be2; --others-bg: #21262d; --text: #e6edf3; --neon: #00f2ff; }
+        
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            height: 100%; 
+            width: 100%;
+            font-family: sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            overflow: hidden; 
+        }
+
+        .login-screen { 
+            position: fixed; 
+            inset: 0; 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            z-index: 100; 
+            padding: 0 20px;
+            box-sizing: border-box;
+        }
+        
+        .login-box { 
+            background: var(--panel); 
+            padding: 40px 25px; 
+            border-radius: 15px; 
+            border: 1px solid var(--accent); 
+            text-align: center; 
+            width: 100%;
+            max-width: 320px; 
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); 
+        }
+
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #0d1117; color: white; box-sizing: border-box; outline: none; }
+        button { width: 100%; padding: 12px; background: var(--accent); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+
+        #chat-app { 
+            display: none; 
+            height: 100%; 
+            width: 100%;
+            flex-direction: column; 
+            position: fixed; 
+            top: 0;
+            left: 0;
+        }
+
+        header { 
+            height: 60px;
+            padding: 0 15px; 
+            background: var(--panel); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border-bottom: 1px solid var(--accent); 
+            flex-shrink: 0;
+        }
+
+        .profile-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon); cursor: pointer; object-fit: cover; }
+
+        #chat-box { 
+            flex: 1; 
+            overflow-y: auto; 
+            padding: 15px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 15px; 
+            background: var(--bg);
+            padding-bottom: 20px;
+        }
+
+        .msg-wrapper { display: flex; gap: 10px; max-width: 85%; align-items: flex-end; }
+        
+        .msg-wrapper.me { align-self: flex-end; flex-direction: row; }
+        .msg-wrapper.me .msg-content { background: var(--accent); border-bottom-right-radius: 2px; }
+        
+        .msg-wrapper.others { align-self: flex-start; flex-direction: row-reverse; }
+        .msg-wrapper.others .msg-content { background: var(--others-bg); border-bottom-left-radius: 2px; }
+        .msg-wrapper.others .msg-name { color: #ff00ff; }
+
+        .msg-content { padding: 10px 15px; border-radius: 12px; position: relative; word-break: break-word; }
+        .msg-name { font-size: 10px; color: var(--neon); margin-bottom: 5px; font-weight: bold; }
+        .msg-pp { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon); flex-shrink: 0; }
+
+        footer { 
+            height: 70px;
+            padding: 0 10px; 
+            background: var(--panel); 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            border-top: 1px solid #333;
+            flex-shrink: 0; 
+            box-sizing: border-box;
+        }
+        #msg-input { flex: 1; margin: 0; }
+
+        /* Style Tambahan buat VN */
+        .vn-btn { width: 60px; background: #222; border: 1px solid var(--accent); font-size: 11px; }
+        .vn-btn.recording { background: #ff4444; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+        audio { max-width: 100%; margin-top: 5px; height: 30px; border-radius: 5px; }
     </style>
 </head>
 <body>
 
-    <div class="box">
-        <h2>JMB SYSTEM V.2</h2>
-        <p>ID PERANGKAT LU:</p>
-        <h3 id="my-id" style="color: #fff; letter-spacing: 2px;">Mencari ID...</h3>
-        <p class="status" id="status-text">Status: Menghubungkan ke Server Jmb...</p>
+<div id="login-screen" class="login-screen">
+    <div class="login-box">
+        <h2 style="color: var(--neon); margin-top: 0;">ACCESS GRANTED</h2>
+        <input type="text" id="u-name" placeholder="Username">
+        <input type="password" id="u-pass" placeholder="Password">
+        <button onclick="login()">ENTER SYSTEM</button>
+        <p id="err" style="color: #ff4444; font-size: 12px; margin-top: 10px;"></p>
     </div>
+</div>
 
-    <div class="box">
-        <button id="btn-share">1. SHARE LAYAR GW</button>
-        <div style="margin-top: 20px;">
-            <input type="text" id="target-id" placeholder="Masukkan ID HP Lawan">
-            <button id="btn-watch">2. TONTON LAYARNYA</button>
+<div id="chat-app">
+    <header>
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <label for="pp-input"><img id="my-pp" class="profile-btn" src="https://via.placeholder.com/40" title="Klik ganti foto"></label>
+            <input type="file" id="pp-input" hidden accept="image/*" onchange="updatePP(this)">
+            <span id="display-name" style="color: var(--neon); font-weight: bold;"></span>
         </div>
-    </div>
+        <button onclick="location.reload()" style="width: auto; padding: 5px 15px; background: #333; font-size: 12px;">OUT</button>
+    </header>
+    
+    <div id="chat-box"></div>
+    
+    <footer>
+        <input type="text" id="msg-input" placeholder="Ketik pesan..." onkeypress="if(event.key==='Enter') sendMsg()">
+        <button id="vn-btn" class="vn-btn" onclick="toggleVN()">VOICE</button>
+        <button onclick="sendMsg()" style="width: 70px;">SEND</button>
+    </footer>
+</div>
 
-    <video id="remote-video" autoplay playsinline controls></video>
+<script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAXK0vszoK1LJ3ksLp2",
+        authDomain: "chatan-76693.firebaseapp.com",
+        projectId: "chatan-76693",
+        storageBucket: "chatan-76693.appspot.com",
+        messagingSenderId: "497865591363",
+        appId: "1:497865591363:web:2a9cb1619623910f115ce9",
+        measurementId: "G-6SSJ5EK115",
+        databaseURL: "https://chatan-76693-default-rtdb.asia-southeast1.firebasedatabase.app"
+    };
 
-    <script>
-        const myIdDisplay = document.getElementById('my-id');
-        const statusText = document.getElementById('status-text');
-        const remoteVideo = document.getElementById('remote-video');
-        
-        // Inisialisasi PeerJS
-        const peer = new Peer();
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    let currentUser = null;
 
-        let myStream;
+    // Logika VN
+    let mediaRecorder;
+    let audioChunks = [];
+    let isRecording = false;
 
-        peer.on('open', (id) => {
-            myIdDisplay.innerText = id;
-            statusText.innerText = "Status: Online & Ready!";
-        });
-
-        // ERROR HANDLER
-        peer.on('error', (err) => {
-            console.error(err);
-            alert("Error Jmb: " + err.type);
-            statusText.innerText = "Status: Error " + err.type;
-        });
-
-        // FITUR SHARE LAYAR (HP SENDER)
-        document.getElementById('btn-share').addEventListener('click', async () => {
+    async function toggleVN() {
+        const btn = document.getElementById('vn-btn');
+        if (!isRecording) {
             try {
-                // Konfigurasi khusus mobile
-                const constraints = {
-                    video: { 
-                        displaySurface: "monitor",
-                        logicalSurface: true,
-                        cursor: "always" 
-                    },
-                    audio: false
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+
+                mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
+                mediaRecorder.onstop = async () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+                    const reader = new FileReader();
+                    reader.readAsDataURL(audioBlob);
+                    reader.onloadend = () => {
+                        const base64Audio = reader.result;
+                        sendVN(base64Audio);
+                    };
                 };
-                
-                myStream = await navigator.mediaDevices.getDisplayMedia(constraints);
-                statusText.innerText = "Status: Layar sedang dibagikan!";
-                
-                // Jika stream mati (user stop sharing lewat system bar)
-                myStream.getVideoTracks()[0].onended = () => {
-                    alert("Sharing berhenti.");
-                    statusText.innerText = "Status: Sharing Berhenti.";
-                };
-                
+
+                mediaRecorder.start();
+                isRecording = true;
+                btn.innerText = "STOP";
+                btn.classList.add('recording');
             } catch (err) {
-                console.error(err);
-                alert("Gagal Share: Pastikan lu pake Chrome/Safari dan HTTPS!");
+                alert("Gagal akses mic: " + err);
             }
+        } else {
+            mediaRecorder.stop();
+            isRecording = false;
+            btn.innerText = "VOICE";
+            btn.classList.remove('recording');
+            mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        }
+    }
+
+    function sendVN(audioData) {
+        const pp = document.getElementById('my-pp').src;
+        db.ref("global_chat").push({
+            sender: currentUser.nama,
+            vn: audioData, // Disimpan sebagai Base64
+            avatar: pp,
+            time: Date.now()
         });
+    }
 
-        // FITUR NONTON (HP RECEIVER)
-        document.getElementById('btn-watch').addEventListener('click', () => {
-            const connId = document.getElementById('target-id').value;
-            if (!connId) return alert("Isi ID-nya dulu, Raja.");
+    const daftarUser = {
+        "ratul": { pass: "ar0_ganteng", nama: "RAFA" },
+        "dani": { pass: "dani123", nama: "DANI OWNER☑️" },
+        "repan": { pass: "repan721", nama: "REPAN" },
+        "rafka": { pass: "rafka793", nama: "RAFKA" },
+        "diki": { pass: "dIKI639", nama: "DIKI" },
+        "puji": { pass: "pujie274", nama: "PUJI" },
+        "rahel": { pass: "rahel123", nama: "ALFI" }
+    };
 
-            statusText.innerText = "Status: Mencoba menyambung ke " + connId;
+    function login() {
+        const user = document.getElementById('u-name').value.toLowerCase().trim();
+        const pass = document.getElementById('u-pass').value;
+        
+        if(daftarUser[user] && daftarUser[user].pass === pass) {
+            currentUser = daftarUser[user];
+            currentUser.id = user;
+            document.getElementById('login-screen').style.display = 'none';
+            document.getElementById('chat-app').style.display = 'flex';
+            document.getElementById('display-name').innerText = currentUser.nama;
             
-            // HP Receiver memanggil HP Sender
-            const call = peer.call(connId, new MediaStream()); // Kirim stream kosong biar trigger
+            const savedPP = localStorage.getItem('pp_' + user);
+            if(savedPP) document.getElementById('my-pp').src = savedPP;
+            
+            loadChats();
+        } else {
+            document.getElementById('err').innerText = "ID atau Password Salah!";
+        }
+    }
 
-            call.on('stream', (incomingStream) => {
-                statusText.innerText = "Status: Streaming Berhasil!";
-                remoteVideo.srcObject = incomingStream;
-                remoteVideo.play();
-            });
+    function updatePP(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgData = e.target.result;
+                document.getElementById('my-pp').src = imgData;
+                localStorage.setItem('pp_' + currentUser.id, imgData);
+
+                db.ref("global_chat").once("value", (snap) => {
+                    const data = snap.val();
+                    if(data) {
+                        for(let id in data) {
+                            if(data[id].sender === currentUser.nama) {
+                                db.ref("global_chat/" + id).update({ avatar: imgData });
+                            }
+                        }
+                    }
+                });
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function sendMsg() {
+        const txt = document.getElementById('msg-input').value.trim();
+        if(!txt) return;
+        const pp = document.getElementById('my-pp').src;
+        
+        db.ref("global_chat").push({
+            sender: currentUser.nama,
+            text: txt,
+            avatar: pp,
+            time: Date.now()
         });
+        document.getElementById('msg-input').value = "";
+    }
 
-        // NERIMA PANGGILAN (HP SENDER)
-        peer.on('call', (call) => {
-            if (myStream) {
-                call.answer(myStream);
-                statusText.innerText = "Status: Seseorang sedang menonton layar lu.";
-            } else {
-                alert("Ada yang mau nonton, tapi lu belum klik 'Share Layar'!");
+    function loadChats() {
+        db.ref("global_chat").on("value", (snap) => {
+            const box = document.getElementById('chat-box');
+            box.innerHTML = "";
+            const data = snap.val();
+            if(data) {
+                for(let id in data) {
+                    const m = data[id];
+                    const isMe = (m.sender === currentUser.nama);
+                    const sideClass = isMe ? 'me' : 'others';
+
+                    const div = document.createElement('div');
+                    div.className = `msg-wrapper ${sideClass}`;
+                    
+                    // Logic buat nampilin Text atau VN
+                    let isiPesan = m.text ? `<div>${m.text}</div>` : `<audio controls src="${m.vn}"></audio>`;
+                    
+                    div.innerHTML = `
+                        <div class="msg-content" onclick="deleteMsg('${id}', '${m.sender}')">
+                            <div class="msg-name">${m.sender}</div>
+                            ${isiPesan}
+                        </div>
+                        <img src="${m.avatar}" class="msg-pp">
+                    `;
+                    box.appendChild(div);
+                }
+                box.scrollTop = box.scrollHeight;
             }
         });
+    }
 
-    </script>
+    function deleteMsg(id, senderName) {
+        if(senderName !== currentUser.nama) {
+            alert("Mana bisa! Ini kan bukan chat lo.");
+            return;
+        }
+
+        if(confirm("Hapus pesan ini?")) {
+            db.ref("global_chat/" + id).remove();
+        }
+    }
+</script>
 </body>
 </html>
