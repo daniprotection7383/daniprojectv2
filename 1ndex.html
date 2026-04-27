@@ -11,17 +11,10 @@
         :root { --bg: #0a0b10; --panel: #161b22; --accent: #8a2be2; --others-bg: #21262d; --text: #e6edf3; --neon: #00f2ff; }
         
         body, html { 
-            margin: 0; 
-            padding: 0; 
-            height: 100%; 
-            width: 100%;
-            font-family: sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            overflow: hidden; 
+            margin: 0; padding: 0; height: 100%; width: 100%;
+            font-family: sans-serif; background-color: var(--bg); color: var(--text); overflow: hidden; 
         }
 
-        /* --- STYLE VC & NOTIF --- */
         #video-grid { 
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
             background: rgba(0,0,0,0.9); z-index: 200; display: none; 
@@ -36,87 +29,59 @@
             width: 280px; background: var(--panel); border: 2px solid var(--neon); 
             border-radius: 15px; padding: 15px; z-index: 300; display: none; 
             box-shadow: 0 0 20px var(--neon); text-align: center;
-            animation: slideDown 0.5s ease;
-        }
-        @keyframes slideDown { from { top: -100px; } to { top: 20px; } }
-
-        .login-screen { 
-            position: fixed; inset: 0; background: var(--bg); 
-            display: flex; justify-content: center; align-items: center; 
-            z-index: 100; padding: 0 20px; box-sizing: border-box;
-        }
-        
-        .login-box { 
-            background: var(--panel); padding: 40px 25px; border-radius: 15px; 
-            border: 1px solid var(--accent); text-align: center; width: 100%;
-            max-width: 320px; box-shadow: 0 0 20px rgba(138, 43, 226, 0.3); 
         }
 
-        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #0d1117; color: white; box-sizing: border-box; outline: none; }
-        button { width: 100%; padding: 12px; background: var(--accent); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .login-screen { position: fixed; inset: 0; background: var(--bg); display: flex; justify-content: center; align-items: center; z-index: 100; }
+        .login-box { background: var(--panel); padding: 40px 25px; border-radius: 15px; border: 1px solid var(--accent); text-align: center; width: 320px; }
+
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #333; background: #0d1117; color: white; box-sizing: border-box; }
+        button { width: 100%; padding: 12px; background: var(--accent); border: none; color: white; border-radius: 8px; font-weight: bold; cursor: pointer; }
 
         #chat-app { display: none; height: 100%; width: 100%; flex-direction: column; position: fixed; top: 0; left: 0; }
 
         header { 
             height: 60px; padding: 0 15px; background: var(--panel); 
             display: flex; justify-content: space-between; align-items: center; 
-            border-bottom: 1px solid var(--accent); flex-shrink: 0;
+            border-bottom: 1px solid var(--accent);
         }
 
         .profile-btn { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--neon); cursor: pointer; object-fit: cover; }
 
-        #chat-box { 
-            flex: 1; overflow-y: auto; padding: 15px; display: flex; 
-            flex-direction: column; gap: 15px; background: var(--bg);
-        }
+        #chat-box { flex: 1; overflow-y: auto; padding: 15px; display: flex; flex-direction: column; gap: 15px; background: var(--bg); }
 
-        /* PERBAIKAN BUBBLE CHAT BIAR GAK NEMPEL */
+        /* FIX POSISI BUBBLE AGAR KONSISTEN */
         .msg-wrapper { display: flex; gap: 10px; max-width: 85%; align-items: flex-end; }
-        
-        /* Pesan SAYA (Kanan) */
         .msg-wrapper.me { align-self: flex-end; flex-direction: row; }
-        .msg-wrapper.me .msg-content { background: var(--accent); border-bottom-right-radius: 2px; text-align: left; }
-        
-        /* Pesan ORANG LAIN (Kiri) */
         .msg-wrapper.others { align-self: flex-start; flex-direction: row-reverse; }
-        .msg-wrapper.others .msg-content { background: var(--others-bg); border-bottom-left-radius: 2px; text-align: left; }
-        .msg-wrapper.others .msg-name { color: #ff00ff; }
 
         .msg-content { padding: 10px 15px; border-radius: 12px; position: relative; word-break: break-word; min-width: 50px; }
+        .msg-wrapper.me .msg-content { background: var(--accent); border-bottom-right-radius: 2px; }
+        .msg-wrapper.others .msg-content { background: var(--others-bg); border-bottom-left-radius: 2px; }
+
         .msg-name { font-size: 10px; color: var(--neon); margin-bottom: 5px; font-weight: bold; }
         .msg-pp { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid var(--neon); flex-shrink: 0; }
 
-        footer { 
-            height: 70px; padding: 0 10px; background: var(--panel); 
-            display: flex; align-items: center; gap: 8px; border-top: 1px solid #333;
-            flex-shrink: 0; box-sizing: border-box;
-        }
-        #msg-input { flex: 1; margin: 0; }
+        footer { height: 70px; padding: 0 10px; background: var(--panel); display: flex; align-items: center; gap: 8px; border-top: 1px solid #333; }
+        #msg-input { flex: 1; }
 
-        .vn-btn { width: 60px; background: #222; border: 1px solid var(--accent); font-size: 11px; }
+        .vn-btn { width: 60px; background: #222; border: 1px solid var(--accent); font-size: 11px; color: white; }
         .vn-btn.recording { background: #ff4444; animation: blink 1s infinite; }
         @keyframes blink { 50% { opacity: 0.5; } }
         
-        /* PERBAIKAN VN PLAYER */
-        audio { max-width: 220px; margin-top: 5px; height: 35px; border-radius: 30px; display: block; }
+        /* FIX VN PLAYER UI */
+        audio { max-width: 200px; height: 35px; display: block; margin-top: 5px; }
 
-        .call-btn { 
-            background: none; border: 1px solid var(--neon); color: var(--neon); 
-            width: 35px; height: 35px; border-radius: 50%; padding: 0; 
-            display: flex; justify-content: center; align-items: center; font-size: 18px; margin: 0 2px;
-        }
+        .call-btn { background: none; border: 1px solid var(--neon); color: var(--neon); width: 35px; height: 35px; border-radius: 50%; display: flex; justify-content: center; align-items: center; }
         .hangup-btn { background: #ff4444 !important; width: auto !important; padding: 5px 10px !important; display: none; }
     </style>
 </head>
 <body>
 
 <div id="incoming-call">
-    <p id="caller-name" style="margin: 0; font-weight: bold; color: var(--neon);"></p>
-    <p style="font-size: 12px; margin: 5px 0;">Memanggil Anda...</p>
-    <div style="display: flex; gap: 10px; justify-content: center;">
-        <button id="accept-call" style="background: #28a745; padding: 8px;">ANGKAT</button>
-        <button id="reject-call" style="background: #dc3545; padding: 8px;">TOLAK</button>
-    </div>
+    <p id="caller-name" style="color: var(--neon); font-weight: bold;"></p>
+    <p>Memanggil...</p>
+    <button id="accept-call" style="background: #28a745; margin-bottom: 5px;">ANGKAT</button>
+    <button id="reject-call" style="background: #dc3545;">TOLAK</button>
 </div>
 
 <div id="video-grid">
@@ -124,30 +89,32 @@
         <video id="remote-video" autoplay playsinline></video>
         <video id="local-video" class="local-video" autoplay playsinline muted></video>
     </div>
-    <button onclick="endCallUI()" style="margin-top: 20px; width: 150px; background: #ff4444;">TUTUP</button>
+    <button onclick="endCallUI()" style="margin-top: 20px; width: 120px; background: #ff4444;">TUTUP</button>
 </div>
 
 <div id="login-screen" class="login-screen">
     <div class="login-box">
-        <h2 style="color: var(--neon); margin-top: 0;">ACCESS GRANTED</h2>
+        <h2 style="color: var(--neon);">LOGIN</h2>
         <input type="text" id="u-name" placeholder="Username">
         <input type="password" id="u-pass" placeholder="Password">
-        <button onclick="login()">ENTER SYSTEM</button>
-        <p id="err" style="color: #ff4444; font-size: 12px; margin-top: 10px;"></p>
+        <button onclick="login()">ENTER</button>
+        <p id="err" style="color: #ff4444; font-size: 12px;"></p>
     </div>
 </div>
 
 <div id="chat-app">
     <header>
-        <div style="display: flex; align-items: center; gap: 5px;">
-            <label for="pp-input"><img id="my-pp" class="profile-btn" src="https://via.placeholder.com/40" title="Klik ganti foto"></label>
+        <div style="display: flex; align-items: center; gap: 8px;">
+            <label for="pp-input"><img id="my-pp" class="profile-btn" src="https://via.placeholder.com/40"></label>
             <input type="file" id="pp-input" hidden accept="image/*" onchange="updatePP(this)">
-            <span id="display-name" style="color: var(--neon); font-weight: bold; font-size: 14px;"></span>
-            <button id="start-call" class="call-btn" title="Telepon">📞</button>
-            <button id="start-vc" class="call-btn" title="Video Call & Share Screen" style="font-size: 22px;">🖥️</button>
-            <button id="end-call" class="hangup-btn">END</button>
+            <span id="display-name" style="color: var(--neon); font-weight: bold;"></span>
         </div>
-        <button onclick="location.reload()" style="width: auto; padding: 5px 10px; background: #333; font-size: 12px;">OUT</button>
+        <div style="display: flex; gap: 5px;">
+            <button id="start-call" class="call-btn">📞</button>
+            <button id="start-vc" class="call-btn">🖥️</button>
+            <button id="end-call" class="hangup-btn">END</button>
+            <button onclick="location.reload()" style="width: auto; padding: 5px; background: #333;">OUT</button>
+        </div>
     </header>
     
     <div id="chat-box"></div>
@@ -176,60 +143,18 @@
     const db = firebase.database();
     let currentUser = null;
     let peer;
-    let localStream;
-    let activeCall;
-    
-    function playRingtone() {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(880, ctx.currentTime);
-        gain.gain.setValueAtTime(0.1, ctx.currentTime);
-        osc.start();
-        setTimeout(() => osc.stop(), 1000);
-    }
 
-    let mediaRecorder;
-    let audioChunks = [];
-    let isRecording = false;
-
-    async function toggleVN() {
-        const btn = document.getElementById('vn-btn');
-        if (!isRecording) {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-                mediaRecorder.ondataavailable = (event) => audioChunks.push(event.data);
-                mediaRecorder.onstop = async () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                    const reader = new FileReader();
-                    reader.readAsDataURL(audioBlob);
-                    reader.onloadend = () => sendVN(reader.result);
-                };
-                mediaRecorder.start();
-                isRecording = true;
-                btn.innerText = "STOP";
-                btn.classList.add('recording');
-            } catch (err) { alert("Mic error: " + err); }
-        } else {
-            mediaRecorder.stop();
-            isRecording = false;
-            btn.innerText = "VOICE";
-            btn.classList.remove('recording');
-            if(mediaRecorder.stream) mediaRecorder.stream.getTracks().forEach(t => t.stop());
-        }
-    }
-
-    function sendVN(audioData) {
-        db.ref("global_chat").push({
-            sender: currentUser.nama,
-            vn: audioData,
-            avatar: document.getElementById('my-pp').src,
-            time: Date.now()
+    /* FITUR SINKRONISASI FOTO PROFIL TOTAL */
+    function syncAllPhotos(newPhotoUrl) {
+        if(!currentUser) return;
+        db.ref("global_chat").once("value", (snap) => {
+            const updates = {};
+            snap.forEach((child) => {
+                if(child.val().sender === currentUser.nama) {
+                    updates[child.key + "/avatar"] = newPhotoUrl;
+                }
+            });
+            db.ref("global_chat").update(updates);
         });
     }
 
@@ -248,108 +173,20 @@
         const pass = document.getElementById('u-pass').value;
         if(daftarUser[user] && daftarUser[user].pass === pass) {
             currentUser = daftarUser[user];
-            currentUser.id = user.toUpperCase();
+            currentUser.id = user;
             document.getElementById('login-screen').style.display = 'none';
             document.getElementById('chat-app').style.display = 'flex';
             document.getElementById('display-name').innerText = currentUser.nama;
+            
             const savedPP = localStorage.getItem('pp_' + user);
-            if(savedPP) document.getElementById('my-pp').src = savedPP;
-            initPeer(user);
+            if(savedPP) {
+                document.getElementById('my-pp').src = savedPP;
+                syncAllPhotos(savedPP); // Langsung sync pas login
+            }
+            
+            peer = new Peer(user);
             loadChats();
         } else { document.getElementById('err').innerText = "Salah!"; }
-    }
-
-    function initPeer(userId) {
-        peer = new Peer(userId);
-        peer.on('call', (call) => {
-            document.getElementById('incoming-call').style.display = 'block';
-            document.getElementById('caller-name').innerText = call.peer.toUpperCase();
-            let ring = setInterval(playRingtone, 1500);
-
-            document.getElementById('accept-call').onclick = () => {
-                clearInterval(ring);
-                document.getElementById('incoming-call').style.display = 'none';
-                navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((stream) => {
-                    localStream = stream;
-                    call.answer(stream);
-                    handleCall(call, true);
-                });
-            };
-
-            document.getElementById('reject-call').onclick = () => {
-                clearInterval(ring);
-                document.getElementById('incoming-call').style.display = 'none';
-                call.close();
-            };
-        });
-    }
-
-    function handleCall(call, isVideo = false) {
-        activeCall = call;
-        if(isVideo) document.getElementById('video-grid').style.display = 'flex';
-        document.getElementById('end-call').style.display = "inline-block";
-        document.getElementById('start-call').style.display = "none";
-        document.getElementById('start-vc').style.display = "none";
-
-        call.on('stream', (remoteStream) => {
-            if(isVideo) {
-                document.getElementById('remote-video').srcObject = remoteStream;
-                document.getElementById('local-video').srcObject = localStream;
-            } else {
-                document.getElementById('remote-audio').srcObject = remoteStream;
-            }
-        });
-        call.on('close', () => endCallUI());
-    }
-
-    document.getElementById('start-call').onclick = () => {
-        const target = prompt("Username tujuan:").toLowerCase();
-        if(!target) return;
-        navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
-            localStream = stream;
-            const call = peer.call(target, stream);
-            handleCall(call, false);
-        });
-    };
-
-    document.getElementById('start-vc').onclick = async () => {
-        const target = prompt("Username tujuan (VC/Share Screen):").toLowerCase();
-        if(!target) return;
-        try {
-            let stream;
-            if(confirm("Gunakan Share Screen? (OK = Share Screen, Cancel = Kamera)")) {
-                stream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
-            } else {
-                stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-            }
-            localStream = stream;
-            const call = peer.call(target, stream);
-            handleCall(call, true);
-        } catch(e) { alert("Gagal akses media"); }
-    };
-
-    document.getElementById('end-call').onclick = () => endCallUI();
-
-    function endCallUI() {
-        if(activeCall) activeCall.close();
-        if(localStream) localStream.getTracks().forEach(t => t.stop());
-        document.getElementById('video-grid').style.display = 'none';
-        document.getElementById('end-call').style.display = "none";
-        document.getElementById('start-call').style.display = "flex";
-        document.getElementById('start-vc').style.display = "flex";
-    }
-
-    function syncProfilePhotos(newPhotoUrl) {
-        db.ref("global_chat").once("value", (snap) => {
-            const data = snap.val();
-            if(data) {
-                for(let id in data) {
-                    if(data[id].sender === currentUser.nama) {
-                        db.ref("global_chat/" + id).update({ avatar: newPhotoUrl });
-                    }
-                }
-            }
-        });
     }
 
     function updatePP(input) {
@@ -358,8 +195,8 @@
             reader.onload = (e) => {
                 const imgData = e.target.result;
                 document.getElementById('my-pp').src = imgData;
-                localStorage.setItem('pp_' + currentUser.id.toLowerCase(), imgData);
-                syncProfilePhotos(imgData);
+                localStorage.setItem('pp_' + currentUser.id, imgData);
+                syncAllPhotos(imgData); // Sync pas ganti baru
             };
             reader.readAsDataURL(input.files[0]);
         }
@@ -377,28 +214,58 @@
         document.getElementById('msg-input').value = "";
     }
 
+    /* LOGIKA VN */
+    let mediaRecorder;
+    let audioChunks = [];
+    async function toggleVN() {
+        const btn = document.getElementById('vn-btn');
+        if (btn.innerText === "VOICE") {
+            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+            mediaRecorder = new MediaRecorder(stream);
+            audioChunks = [];
+            mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+            mediaRecorder.onstop = () => {
+                const blob = new Blob(audioChunks, { type: 'audio/webm' });
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    db.ref("global_chat").push({
+                        sender: currentUser.nama,
+                        vn: reader.result,
+                        avatar: document.getElementById('my-pp').src,
+                        time: Date.now()
+                    });
+                };
+                reader.readAsDataURL(blob);
+            };
+            mediaRecorder.start();
+            btn.innerText = "STOP";
+            btn.classList.add('recording');
+        } else {
+            mediaRecorder.stop();
+            btn.innerText = "VOICE";
+            btn.classList.remove('recording');
+        }
+    }
+
     function loadChats() {
         db.ref("global_chat").on("value", (snap) => {
             const box = document.getElementById('chat-box');
             box.innerHTML = "";
-            const data = snap.val();
-            if(data) {
-                for(let id in data) {
-                    const m = data[id];
-                    const isMe = (m.sender === currentUser.nama);
-                    const div = document.createElement('div');
-                    div.className = `msg-wrapper ${isMe ? 'me' : 'others'}`;
-                    div.innerHTML = `
-                        <div class="msg-content" onclick="deleteMsg('${id}', '${m.sender}')">
-                            <div class="msg-name">${m.sender}</div>
-                            ${m.text ? `<div>${m.text}</div>` : `<audio controls src="${m.vn}"></audio>`}
-                        </div>
-                        <img src="${m.avatar}" class="msg-pp">
-                    `;
-                    box.appendChild(div);
-                }
-                box.scrollTop = box.scrollHeight;
-            }
+            snap.forEach((child) => {
+                const m = child.val();
+                const isMe = (m.sender === currentUser.nama);
+                const div = document.createElement('div');
+                div.className = `msg-wrapper ${isMe ? 'me' : 'others'}`;
+                div.innerHTML = `
+                    <div class="msg-content" onclick="deleteMsg('${child.key}', '${m.sender}')">
+                        <div class="msg-name">${m.sender}</div>
+                        ${m.text ? `<div>${m.text}</div>` : `<audio controls src="${m.vn}"></audio>`}
+                    </div>
+                    <img src="${m.avatar}" class="msg-pp">
+                `;
+                box.appendChild(div);
+            });
+            box.scrollTop = box.scrollHeight;
         });
     }
 
